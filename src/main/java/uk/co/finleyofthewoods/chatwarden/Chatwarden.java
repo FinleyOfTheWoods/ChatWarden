@@ -3,23 +3,23 @@ package uk.co.finleyofthewoods.chatwarden;
 import lombok.extern.slf4j.Slf4j;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
-import uk.co.finleyofthewoods.chatwarden.filters.ExactChatFilter;
-import uk.co.finleyofthewoods.chatwarden.filters.WildCardChatFilter;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import uk.co.finleyofthewoods.chatwarden.handlers.ServerMessageEventsHandler;
 
 @Slf4j
 public class Chatwarden implements ModInitializer {
-    private static final ExactChatFilter EXACT_BAD_WORD_FILTER = new ExactChatFilter();
-    private static final WildCardChatFilter WILDCARD_BAD_WORD_FILTER = new WildCardChatFilter();
+    private static final String MOD_ID = "chatwarden";
+    private static final ModContainer MOD_CONTAINER = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow();
+    private static final String MOD_NAME = MOD_CONTAINER.getMetadata().getName();
+    private static final String MOD_VERSION = MOD_CONTAINER.getMetadata().getVersion().getFriendlyString();
 
     @Override
     public void onInitialize() {
-        log.info("Chat Warden initialised");
+        log.info("{} {} initialising...", MOD_NAME, MOD_VERSION);
+        ServerMessageEventsHandler.init();
+        log.info("{} {} initialised", MOD_NAME, MOD_VERSION);
 
-        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, player, _) -> {
-            String messageContent = message.decoratedContent().getString().toLowerCase();
-
-            return EXACT_BAD_WORD_FILTER.allowMessage(messageContent, player)
-                    && WILDCARD_BAD_WORD_FILTER.allowMessage(messageContent, player);
-        });
+        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(ServerMessageEventsHandler::handle);
     }
 }
