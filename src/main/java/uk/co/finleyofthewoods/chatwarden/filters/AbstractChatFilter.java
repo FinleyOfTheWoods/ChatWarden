@@ -10,22 +10,25 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
 public abstract class AbstractChatFilter {
     private static final Gson GSON = new Gson();
+    protected Set<String> badWords = Collections.emptySet();
 
     public boolean allowMessage(String message, ServerPlayer player) {
-        log.debug("{} filtering message send by {}: {}", this.getClass().getSimpleName(),
+        if (log.isDebugEnabled()) log.debug("{} filtering message send by {}: {}", this.getClass().getSimpleName(),
                 player.getDisplayName().getString(), message);
         if (filter(message)) {
             log.warn("Message filtered by {}", this.getClass().getSimpleName());
             log.warn("Sender: {}, Message: {}", player.getDisplayName().getString(), message);
             return false;
         }
-        log.debug("Message allowed by {}", this.getClass().getSimpleName());
+        if (log.isDebugEnabled()) log.debug("Message allowed by {}", this.getClass().getSimpleName());
         return true;
     }
 
@@ -46,7 +49,7 @@ public abstract class AbstractChatFilter {
             return;
         }
 
-        try (FileReader reader = new FileReader(file)) {
+        try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
             Set<String> loadedWords = GSON.fromJson(reader, new TypeToken<Set<String>>(){}.getType());
 
             if (loadedWords == null) {
@@ -60,10 +63,17 @@ public abstract class AbstractChatFilter {
         }
     }
 
-    protected abstract void setBadWords(Set<String> loadedWords);
+    protected void setBadWords(Set<String> loadedWords) {
+        Set<String> cleaned = new HashSet<>(loadedWords.size());
+        for (String word : loadedWords) {
+            if (word == null || word.isBlank()) continue;
+            cleaned.add(word.trim().toLowerCase());
+        }
+        badWords = Set.copyOf(cleaned);
+    }
 
     private void createConfigFile(File file) {
-        try (FileWriter writer = new FileWriter(file)) {
+        try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
             GSON.toJson(Collections.emptySet(), writer);
         } catch (IOException e) {
             log.error("Error creating bad words file: {}", e.getMessage());
