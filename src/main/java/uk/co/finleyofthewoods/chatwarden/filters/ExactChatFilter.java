@@ -1,8 +1,5 @@
 package uk.co.finleyofthewoods.chatwarden.filters;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 public class ExactChatFilter extends AbstractChatFilter {
