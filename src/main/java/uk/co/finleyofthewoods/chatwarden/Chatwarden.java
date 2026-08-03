@@ -7,6 +7,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import uk.co.finleyofthewoods.chatwarden.handlers.ServerMessageEventsHandler;
 
+import java.io.File;
+
 @Slf4j
 public class Chatwarden implements ModInitializer {
     private static final String MOD_ID = "chatwarden";
@@ -17,6 +19,13 @@ public class Chatwarden implements ModInitializer {
     @Override
     public void onInitialize() {
         log.info("{} {} initialising...", MOD_NAME, MOD_VERSION);
+
+        File directory = FabricLoader.getInstance().getConfigDir().resolve("chatwarden").toFile();
+        if (!directory.exists() && !directory.mkdirs()) {
+            log.error("Failed to create directory {}", directory.getAbsolutePath());
+            log.error("{} is disabled", MOD_NAME);
+        }
+
         ServerMessageEventsHandler.init();
         log.info("{} {} initialised", MOD_NAME, MOD_VERSION);
 

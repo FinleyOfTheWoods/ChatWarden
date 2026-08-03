@@ -38,12 +38,7 @@ public abstract class AbstractChatFilter {
 
     public void load() {
 
-        File directory = FabricLoader.getInstance().getConfigDir().resolve("chatwarden").toFile();
-        if (!directory.exists() && !directory.mkdirs()) {
-            log.error("Failed to create directory {}", directory.getAbsolutePath());
-            return;
-        }
-        File file = new File(directory, getFileName());
+        File file = FabricLoader.getInstance().getConfigDir().resolve("chatwarden").resolve(getFileName()).toFile();
         if (!file.exists()) {
             createConfigFile(file);
             return;
