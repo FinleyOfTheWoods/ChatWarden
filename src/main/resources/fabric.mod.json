@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "chatwarden",
+  "version": "${version}",
+  "name": "ChatWarden",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MPL-2.0",
+  "icon": "assets/chatwarden/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "uk.co.finleyofthewoods.chatwarden.Chatwarden"
+    ]
+  },
+  "mixins": [
+    "chatwarden.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
