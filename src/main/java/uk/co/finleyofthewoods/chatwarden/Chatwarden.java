@@ -24,6 +24,7 @@ public class Chatwarden implements ModInitializer {
         if (!directory.exists() && !directory.mkdirs()) {
             log.error("Failed to create directory {}", directory.getAbsolutePath());
             log.error("{} is disabled", MOD_NAME);
+            return;
         }
 
         ServerMessageEventsHandler.init();
