@@ -14,12 +14,9 @@
       "uk.co.finleyofthewoods.chatwarden.Chatwarden"
     ]
   },
-  "mixins": [
-    "chatwarden.mixins.json"
-  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric-api": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": ">=${minecraft_version}"
   }
 }

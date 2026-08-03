@@ -1,7 +1,0 @@
-{
-  "package": "uk.co.finleyofthewoods.chatwarden.mixin",
-  "compatibilityLevel": "JAVA_25",
-  "server": [
-    "ChatEventMixin"
-  ]
-}
